@@ -2,7 +2,7 @@ openapi: 3.0.0
 paths:
   /api:
     get:
-      description: Devuelve un string si la Api esta activa.
+      description: Devuelve un string si la Apeeeeee esta activa.
       operationId: AppController_getHello
       parameters: []
       responses:
