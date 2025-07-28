@@ -1,0 +1,6542 @@
+openapi: 3.0.0
+paths:
+  /api:
+    get:
+      description: Devuelve un string si la API está activa.
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: API activa.
+      summary: Health check
+      tags:
+        - App
+  /api/auth/login:
+    post:
+      description: Authenticates a user and returns a JWT token or MFA information.
+      operationId: AuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUserDTO'
+      responses:
+        '200':
+          description: Successful login. Returns JWT token or MFA information.
+        '401':
+          description: Invalid credentials.
+      summary: User login
+      tags: &ref_0
+        - Auth
+  /api/auth/logout:
+    post:
+      description: Logs out the current user.
+      operationId: AuthController_logout
+      parameters: []
+      responses:
+        '200':
+          description: Successful logout.
+      summary: User logout
+      tags: *ref_0
+  /api/auth/validate:
+    post:
+      description: Validates email and password without logging in.
+      operationId: AuthController_validate
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUserDTO'
+      responses:
+        '200':
+          description: Credentials are valid or not.
+        '401':
+          description: Invalid credentials.
+      summary: Validate credentials
+      tags: *ref_0
+  /api/user:
+    post:
+      operationId: UserController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDTO'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_1
+        - User
+  /api/user/enableMfa:
+    post:
+      operationId: UserController_enableMfa
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnableMfaDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/user/resetMfa:
+    post:
+      operationId: UserController_resetMfa
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnableMfaDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/user/changePassword:
+    post:
+      operationId: UserController_changePassword
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/user/resetPassword:
+    patch:
+      operationId: UserController_resetPassword
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/user/{email}:
+    patch:
+      operationId: UserController_updateUser
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/user/{id}:
+    delete:
+      operationId: UserController_delete
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/user/lambdas/inactiveUsersByNoLogin:
+    patch:
+      operationId: UserController_inactiveUsersByNoLogin
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/user/details:
+    get:
+      operationId: UserController_getUser
+      parameters:
+        - name: email
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/user/all:
+    get:
+      operationId: UserController_getUsersByClientEmail
+      parameters:
+        - name: roles
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/user/toAssign:
+    get:
+      operationId: UserController_getUsersToAssingByClientEmail
+      parameters:
+        - name: roles
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /api/client/createClientService:
+    post:
+      operationId: ConsumptionServicesController_createClientService
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClientServiceDTO'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_2
+        - ConsumptionServices
+  /api/client/allClientsCurrentServices:
+    get:
+      operationId: ConsumptionServicesController_retrieveAllClientsCurrentServices
+      parameters:
+        - name: active
+          required: true
+          in: query
+          schema:
+            type: boolean
+        - name: autoRenewal
+          required: true
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/clientServices/{email}:
+    get:
+      operationId: ConsumptionServicesController_retrieveClientServicesByEmail
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: active
+          required: true
+          in: query
+          schema:
+            type: boolean
+        - name: autoRenewal
+          required: true
+          in: query
+          schema:
+            type: boolean
+        - name: responseFormat
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/clientServices/{email}/{service}:
+    get:
+      operationId: ConsumptionServicesController_retrieveClientServicesByEmailByService
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: service
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: active
+          required: true
+          in: query
+          schema:
+            type: boolean
+        - name: autoRenewal
+          required: true
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/currentClientServices/{email}:
+    get:
+      operationId: ConsumptionServicesController_retrieveClientServicesByEmailByDate
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: date
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: active
+          required: true
+          in: query
+          schema:
+            type: boolean
+        - name: autoRenewal
+          required: true
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/currentClientServices/{email}/{service}:
+    get:
+      operationId: >-
+        ConsumptionServicesController_retrieveClientServicesByEmailByServiceByDate
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: service
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: date
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: active
+          required: true
+          in: query
+          schema:
+            type: boolean
+        - name: autoRenewal
+          required: true
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/updateClientService:
+    patch:
+      operationId: ConsumptionServicesController_updateClientService
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClientServiceDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/addOrRmSubservices:
+    patch:
+      operationId: ConsumptionServicesController_addOrRmSubervicesToClientService
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/updateClientService/count:
+    patch:
+      operationId: ConsumptionServicesController_countClientService
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/createClientConsumption:
+    post:
+      operationId: ConsumptionServicesController_createClientConsumption
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClientConsumptionDTO'
+      responses:
+        '202':
+          description: ''
+      tags: *ref_2
+  /api/client/clientConsumptions/{email}:
+    get:
+      operationId: ConsumptionServicesController_retrieveClientConsumptionsByEmail
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/clientConsumptions/{email}/{service}:
+    get:
+      operationId: ConsumptionServicesController_retrieveClientConsumptionsEmailByService
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/currentClientConsumptions/{email}:
+    get:
+      operationId: ConsumptionServicesController_retrieveClientConsumptionByEmailByDate
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/currentClientConsumptions/{email}/{service}:
+    get:
+      operationId: ConsumptionServicesController_clientConsumptionsByEmailByServiceByDate
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: service
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: date
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/clientConsumptionsBetween/{email}:
+    get:
+      operationId: ConsumptionServicesController_clientConsumptionsByEmailBetween
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: initial
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: final
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/allClientConsumptionsBetweenDates:
+    get:
+      operationId: ConsumptionServicesController_allClientConsumptionsBetweenDates
+      parameters:
+        - name: initial
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: final
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: email
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/clientConsumptionsById/{cId}:
+    get:
+      operationId: ConsumptionServicesController_clientConsumptionsById
+      parameters:
+        - name: cId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/consumptionServiceByService/{service}:
+    get:
+      operationId: ConsumptionServicesController_consumptionServiceByService
+      parameters:
+        - name: service
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/consumptionServiceByServiceBetweenDates/{service}:
+    get:
+      operationId: ConsumptionServicesController_consumptionServiceByServiceBetweenDates
+      parameters:
+        - name: service
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: initial
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: final
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: percentage
+          required: true
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/consumptionServiceBySubservice/{subservice}:
+    get:
+      operationId: ConsumptionServicesController_consumptionServiceBySubservice
+      parameters:
+        - name: subservice
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/consumptionServiceBySubserviceBetweenDates/{subservice}:
+    get:
+      operationId: ConsumptionServicesController_consumptionServiceBySubserviceBetweenDates
+      parameters:
+        - name: subservice
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: initial
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: final
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: percentage
+          required: true
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/consumptionServiceProcessedUsers:
+    get:
+      operationId: ConsumptionServicesController_consumptionServiceProcessedUsers
+      parameters:
+        - name: user
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: initial
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: final
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: percentage
+          required: true
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/allActiveEmails:
+    get:
+      operationId: ConsumptionServicesController_allActiveEmails
+      parameters:
+        - name: initial
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: final
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/cronRenewal:
+    get:
+      operationId: ConsumptionServicesController_cronTestRenewal
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/client/cronDelete:
+    get:
+      operationId: ConsumptionServicesController_cronTestDelete
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+  /api/reports/client/types:
+    get:
+      operationId: ReportsController_getReportsTypesByClientEmail
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: &ref_3
+        - Reports
+  /api/reports/client/{type}:
+    get:
+      operationId: ReportsController_getReportsItemsByClientEmailAndType
+      parameters:
+        - name: type
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /api/reports:
+    post:
+      operationId: ReportsController_createReport
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReportDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /api/reports/item:
+    post:
+      operationId: ReportsController_createReportItem
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReportItemDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /api/reports/rules:
+    get:
+      operationId: ReportsController_getRulesReportByClient
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /api/reports/rules-byuser:
+    get:
+      operationId: ReportsController_getRulesReportByUserByClient
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /api/reports/rulessummary-byuser:
+    get:
+      operationId: ReportsController_getRulesSummaryReportByUserByClient
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /api/kyt/transactions/all/verify:
+    post:
+      operationId: KytController_verifyExistingTransaction
+      parameters:
+        - name: itemId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: forceVerified
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags: &ref_4
+        - Kyt
+  /api/kyt/verifyTransaction:
+    post:
+      operationId: KytController_verifyTransaction
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InVerifyTransactionDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_4
+  /api/kyt/verifyTransactionWithTime:
+    post:
+      operationId: KytController_verifyTransactionWithTime
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InVerifyTransactionDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_4
+  /api/kyt/retrieveTransaction/{transactionId}:
+    get:
+      operationId: KytController_retrieveTransaction
+      parameters:
+        - name: transactionId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/createTransactionEvent:
+    post:
+      operationId: KytController_createTransactionEvent
+      parameters:
+        - name: verifyAgain
+          required: true
+          in: query
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InCreateTransactionEventDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_4
+  /api/kyt/createConsumerUser:
+    post:
+      operationId: KytController_createConsumerUser
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateConsumerUserDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_4
+  /api/kyt/retrieveConsumerUser/{consumerUserId}:
+    get:
+      operationId: KytController_retrieveConsumerUser
+      parameters:
+        - name: consumerUserId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: viewMode
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/users/consumers/{id}:
+    get:
+      operationId: KytController_retrieveConsumerUserById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: viewMode
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/users/business/{id}:
+    get:
+      operationId: KytController_retrieveBusinessUserById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: viewMode
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/createConsumerUserEvent:
+    post:
+      operationId: KytController_createConsumerUserEvent
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InCreateConsumerUserEventDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/createBusinessUser:
+    post:
+      operationId: KytController_createBusinessUser
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBusinessUserDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_4
+  /api/kyt/retrieveBusinessUser/{businessUserId}:
+    get:
+      operationId: KytController_retrieveBusinessUser
+      parameters:
+        - name: businessUserId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: viewMode
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/createBusinessUserEvent:
+    post:
+      operationId: KytController_createBusinessUserEvent
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InCreateBusinessUserEventDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/transactions/{email}/tags:
+    get:
+      operationId: KytController_getTransactionsTagsByEmail
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/transactions/{email}:
+    get:
+      operationId: KytController_getTransactionsByEmail
+      parameters:
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/externalPaymentMethods/{email}/detail:
+    post:
+      operationId: KytController_getTransactionsByExternalPaymentMethods
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentMethodDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/externalPaymentMethods/{email}/users/{userType}:
+    post:
+      operationId: KytController_getUsersTransactionsByExternalPaymentMethods
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentMethodDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/users/{id}/{email}:
+    get:
+      operationId: KytController_getUsersByIdByEmail
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/users:
+    get:
+      operationId: KytController_getUsersByTypeAndString
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/consumerUsers/{email}:
+    get:
+      operationId: KytController_getConsumerUsersByEmail
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/businessUsers/{email}:
+    get:
+      operationId: KytController_getBusinessUsersByEmail
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/retrieveAllClientTransactionEvents/{email}/{transactionId}:
+    get:
+      operationId: KytController_retrieveAllClientTransactionEvents
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: transactionId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/saveCredentials:
+    post:
+      operationId: KytController_saveCredentials
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/updateCredentials/{email}:
+    put:
+      operationId: KytController_updateCredentials
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/retrieveClientRules:
+    get:
+      operationId: KytController_retrieveAllClientRules
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/retrieveClientRuleById/{ruleId}:
+    get:
+      operationId: KytController_retrieveClientRuleById
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/ruleFilters:
+    get:
+      operationId: KytController_getRuleFilters
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/retrieveClientInstanceRules:
+    get:
+      operationId: KytController_retrieveAllClientInstanceRules
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/createClientInstanceRule:
+    post:
+      operationId: KytController_createClientInstanceRule
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/updateClientInstanceRule/{ruleId}:
+    post:
+      operationId: KytController_updateClientInstanceRule
+      parameters:
+        - name: ruleId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/deleteClientInstanceRule/{ruleId}:
+    delete:
+      operationId: KytController_deleteClientInstanceRule
+      parameters:
+        - name: ruleId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/sendSlackMessage:
+    post:
+      operationId: KytController_sendSlackMessage
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InSendSlackMessageDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/getAnnualSummary/{email}:
+    get:
+      operationId: KytController_getAnnualSummary
+      parameters:
+        - name: date
+          required: true
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/getCurrentMonthTransactionsStatePercentage/{email}:
+    get:
+      operationId: KytController_getCurrentMonthTransactionsStatePercentage
+      parameters:
+        - name: date
+          required: true
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/externalPaymentMethods/{email}:
+    get:
+      operationId: KytController_getExternalPaymentMethods
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: sortTransactions
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: mode
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: paymentMethodId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: paymentMethod
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/userActions/{userId}:
+    get:
+      operationId: KytController_getUserActions
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/kyt/userActions:
+    post:
+      operationId: KytController_createUserAction
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserActionDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /api/admin/roles:
+    post:
+      operationId: RolesController_createRole
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_5
+        - Roles
+  /api/admin/roles/{id}:
+    patch:
+      operationId: RolesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+    delete:
+      operationId: RolesController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+  /api/admin/roles/emailClient/{emailClient}:
+    get:
+      operationId: RolesController_getListRolesByEmailClient
+      parameters:
+        - name: emailClient
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+  /api/admin/roles/roleName/{roleName}:
+    get:
+      operationId: RolesController_findOneNByRoleName
+      parameters:
+        - name: roleName
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+  /api/admin/roles/subservices:
+    get:
+      operationId: RolesController_getSubServicePaths
+      parameters:
+        - name: emailClient
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: roles
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+  /api/usermaster:
+    get:
+      operationId: UserMasterController_getAllUsersMaster
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: &ref_6
+        - UserMaster
+    post:
+      operationId: UserMasterController_createUserMaster
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserMasterDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_6
+  /api/usermaster/{emailClient}:
+    get:
+      operationId: UserMasterController_getUserMasterByEmailClient
+      parameters:
+        - name: emailClient
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_6
+    patch:
+      operationId: UserMasterController_updateUserMaster
+      parameters:
+        - name: emailClient
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserMasterDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_6
+    delete:
+      operationId: UserMasterController_deleteUserMaster
+      parameters:
+        - name: emailClient
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_6
+  /api/usermaster/all/query:
+    get:
+      operationId: UserMasterController_findAllByQuery
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_6
+  /api/admin/info/endpoints:
+    get:
+      operationId: InfoController_getEndpoints
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: &ref_7
+        - Info
+  /api/admin/info/sessionActiveServices/{emailClient}:
+    get:
+      operationId: InfoController_getSubServicesActiveByEmailClient
+      parameters:
+        - name: emailClient
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_7
+  /api/caseManagement/updateCases:
+    patch:
+      operationId: CaseManagementController_updateManyCases
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateManyCases'
+      responses:
+        '200':
+          description: ''
+      tags: &ref_8
+        - CaseManagement
+  /api/caseManagement/tags:
+    get:
+      operationId: CaseManagementController_retrieveCaseManagementsTags
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/statistics:
+    get:
+      operationId: CaseManagementController_getStatistics
+      parameters:
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: period
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/report:
+    get:
+      operationId: CaseManagementController_getHistoryCaseDetails
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}:
+    get:
+      operationId: CaseManagementController_retrieveCaseManagement
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+    patch:
+      operationId: CaseManagementController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCaseManagementDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+    delete:
+      operationId: CaseManagementController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/transactions:
+    get:
+      operationId: CaseManagementController_retrieveTransactionsForCase
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/alerts:
+    get:
+      operationId: CaseManagementController_retrieveTransactionsAlertsByCase
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/timeline:
+    get:
+      operationId: CaseManagementController_retrieveTimelineForCase
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/checklists:
+    get:
+      operationId: CaseManagementController_retrieveAllCaseManagementChecklists
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement:
+    get:
+      operationId: CaseManagementController_retrieveCaseManagements
+      parameters:
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: alertAction
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: category
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+    post:
+      operationId: CaseManagementController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCaseManagementDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/status/{status}:
+    post:
+      operationId: CaseManagementController_changeStatus
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: status
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/comments:
+    post:
+      operationId: CaseManagementController_addComment
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/reports:
+    post:
+      operationId: CaseManagementController_addReport
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCaseReportDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/reports/{caseId}:
+    patch:
+      operationId: CaseManagementController_updateReport
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: caseId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCaseReportDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/assignedUser/{userId}:
+    post:
+      operationId: CaseManagementController_addUser
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/openCase/{id}:
+    patch:
+      operationId: CaseManagementController_openCase
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCaseManagementDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/file:
+    post:
+      operationId: CaseManagementController_attachFile
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/file/{key}:
+    delete:
+      operationId: CaseManagementController_deleteFile
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/caseManagement/{id}/prompt/{lang}/{prompt}:
+    post:
+      operationId: CaseManagementController_casePrompts
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: lang
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: prompt
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_8
+  /api/comments/{id}:
+    get:
+      operationId: CommentsController_retrieveComment
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: &ref_9
+        - Comments
+    patch:
+      operationId: CommentsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_9
+    delete:
+      operationId: CommentsController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags: *ref_9
+  /api/comments:
+    get:
+      operationId: CommentsController_retrieveComments
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_9
+    post:
+      operationId: CommentsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_9
+  /api/caseReports/{id}:
+    get:
+      operationId: CaseReportsController_retrieveCaseReport
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: &ref_10
+        - CaseReports
+    patch:
+      operationId: CaseReportsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_10
+  /api/caseReports:
+    get:
+      operationId: CaseReportsController_retrieveCaseReports
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_10
+    post:
+      operationId: CaseReportsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCaseReportDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_10
+  /api/admin/checklistInstances:
+    post:
+      operationId: ChecklistInstancesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChecklistInstanceDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_11
+        - ChecklistInstances
+    get:
+      operationId: ChecklistInstancesController_retrieveChecklistInstances
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_11
+  /api/admin/checklistInstances/{id}:
+    get:
+      operationId: ChecklistInstancesController_retrieveChecklistInstance
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_11
+    patch:
+      operationId: ChecklistInstancesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChecklistInstanceDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_11
+    delete:
+      operationId: ChecklistInstancesController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_11
+  /api/admin/checklistTemplates:
+    post:
+      operationId: ChecklistTemplateController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChecklistTemplateDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_12
+        - ChecklistTemplate
+    get:
+      operationId: ChecklistTemplateController_retrieveChecklistTemplates
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_12
+  /api/admin/checklistTemplates/{id}:
+    get:
+      operationId: ChecklistTemplateController_retrieveChecklistTemplate
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_12
+    patch:
+      operationId: ChecklistTemplateController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChecklistTemplateDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_12
+    delete:
+      operationId: ChecklistTemplateController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_12
+  /api/generalAlerts:
+    post:
+      operationId: GeneralAlertsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGeneralAlertDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_13
+        - GeneralAlerts
+    get:
+      operationId: GeneralAlertsController_retrieveGeneralAlters
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_13
+  /api/generalAlerts/statistics:
+    get:
+      operationId: GeneralAlertsController_getStatistics
+      parameters:
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: period
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_13
+  /api/generalAlerts/{id}:
+    get:
+      operationId: GeneralAlertsController_retrieveOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_13
+    patch:
+      operationId: GeneralAlertsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGeneralAlertDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_13
+  /api/generalAlerts/aml/consumerUser/{consumerUserId}:
+    get:
+      operationId: GeneralAlertsController_retrieveAmlAlertsByUserId
+      parameters:
+        - name: consumerUserId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_13
+  /api/generalAlerts/{id}/status/{status}:
+    patch:
+      operationId: GeneralAlertsController_changeStatus
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: status
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_13
+  /api/alertSettings:
+    post:
+      operationId: AlertSettingsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAlertSettingDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_14
+        - AlertSettings
+  /api/alertSettings/emailClient:
+    get:
+      operationId: AlertSettingsController_findByEmailClient
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_14
+  /api/alertSettings/{id}:
+    get:
+      operationId: AlertSettingsController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_14
+    patch:
+      operationId: AlertSettingsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAlertSettingDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_14
+  /api/aml/complyV1:
+    post:
+      operationId: AmlController_complyCA
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmlCAInputDto'
+      responses:
+        '200':
+          description: ''
+      tags: &ref_15
+        - Aml
+  /api/aml/getByReferenceId/{id}:
+    get:
+      operationId: AmlController_getByReferenceId
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/getBySearchId/{id}:
+    get:
+      operationId: AmlController_getBySearchId
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/getAllChecks/{email}:
+    get:
+      operationId: AmlController_getAllChecks
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/update/{id}:
+    patch:
+      operationId: AmlController_updateAmlById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAmlDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/delete/{id}:
+    delete:
+      operationId: AmlController_deleteAmlById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/updatemonitors/{id}:
+    patch:
+      operationId: AmlController_updateMonitorById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMonitorsDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/monitordifferences/{id}:
+    get:
+      operationId: AmlController_getCaMonitorsDiffById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/comments/{id}:
+    post:
+      operationId: AmlController_addCommnetsById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAmlCommentDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/BR:
+    post:
+      operationId: AmlController_reportBR
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmlBrDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+    get:
+      operationId: AmlController_getAmlBrReportsByEmail
+      parameters:
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/BR/{id}:
+    get:
+      operationId: AmlController_getBrReportById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/aml/BR/comments/{id}:
+    post:
+      operationId: AmlController_addBrCommnetsById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAmlCommentDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+  /api/amlWebhook:
+    post:
+      operationId: AmlWebhookController_check
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - AmlWebhook
+  /api/amlCrypto/addressLabel:
+    get:
+      operationId: AmlCryptoController_addressLabel
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: &ref_16
+        - AmlCrypto
+  /api/amlCrypto/addressRiskScore:
+    get:
+      operationId: AmlCryptoController_addressRiskScore
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_16
+  /api/amlCrypto/addressRiskActivity:
+    get:
+      operationId: AmlCryptoController_addressRiskActivity
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_16
+  /api/amlCrypto/addressChecks/{email}:
+    get:
+      operationId: AmlCryptoController_getAddressChecks
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_16
+  /api/amlCrypto/addressCheckById/{id}:
+    get:
+      operationId: AmlCryptoController_addressCheck
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_16
+  /api/amlCrypto/transactionRiskScore:
+    get:
+      operationId: AmlCryptoController_transactionRiskScore
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_16
+  /api/amlCrypto/darkWebWallet:
+    get:
+      operationId: AmlCryptoController_darkWebWallet
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_16
+  /api/rules:
+    post:
+      operationId: RulesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRuleDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_17
+        - Rules
+    get:
+      operationId: RulesController_retrieveRules
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_17
+  /api/rules/{id}:
+    get:
+      operationId: RulesController_retrieveOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_17
+    patch:
+      operationId: RulesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRuleDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_17
+    delete:
+      operationId: RulesController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_17
+  /api/bins/import:
+    post:
+      operationId: BinsController_importBins
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportBinsDto'
+      responses:
+        '200':
+          description: ''
+      tags: &ref_18
+        - Bins
+  /api/bins/check:
+    get:
+      operationId: BinsController_getBin
+      parameters:
+        - name: bin
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_18
+  /api/bins:
+    get:
+      operationId: BinsController_getBins
+      parameters:
+        - name: search
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_18
+  /api/caseAdminPanel:
+    post:
+      operationId: CaseAdminPanelController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCaseAdminPanelDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_19
+        - CaseAdminPanel
+  /api/caseAdminPanel/{emailClient}:
+    get:
+      operationId: CaseAdminPanelController_retrieveCaseAdminPanel
+      parameters:
+        - name: emailClient
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_19
+  /api/caseAdminPanel/{id}:
+    patch:
+      operationId: CaseAdminPanelController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCaseAdminPanelDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_19
+    delete:
+      operationId: CaseAdminPanelController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags: *ref_19
+  /api/workflows/{id}:
+    get:
+      operationId: WorkflowsController_retrieveWorkflow
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: &ref_20
+        - Workflows
+    patch:
+      operationId: WorkflowsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_20
+    delete:
+      operationId: WorkflowsController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags: *ref_20
+  /api/workflows:
+    get:
+      operationId: WorkflowsController_retrieveWorkflows
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_20
+    post:
+      operationId: WorkflowsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkflowDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_20
+  /api/rulesTemplates:
+    post:
+      operationId: RulesTemplatesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRulesTemplateDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_21
+        - RulesTemplates
+    get:
+      operationId: RulesTemplatesController_retrieveRulesTemplates
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_21
+  /api/rulesTemplates/{id}:
+    get:
+      operationId: RulesTemplatesController_retrieveOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_21
+    patch:
+      operationId: RulesTemplatesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRulesTemplateDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_21
+  /api/filters-templates:
+    post:
+      operationId: FiltersTemplatesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFiltersTemplateDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_22
+        - FiltersTemplates
+    get:
+      operationId: FiltersTemplatesController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_22
+  /api/filters-templates/{id}:
+    get:
+      operationId: FiltersTemplatesController_retrieveOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_22
+    patch:
+      operationId: FiltersTemplatesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFiltersTemplateDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_22
+  /api/conversion:
+    post:
+      operationId: ConversionController_convertCurrencies
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Conversion
+  /api/admin/lists:
+    post:
+      operationId: ListsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateListDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_23
+        - Lists
+    get:
+      operationId: ListsController_retrieveLists
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_23
+  /api/admin/lists/{id}:
+    get:
+      operationId: ListsController_retrieveList
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_23
+    patch:
+      operationId: ListsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateListsDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_23
+    delete:
+      operationId: ListsController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_23
+  /api/ras:
+    post:
+      operationId: RuleAdvSettingController_createRAS
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRuleAdvSettingDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_24
+        - RuleAdvSetting
+    get:
+      operationId: RuleAdvSettingController_findAllRAS
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_24
+  /api/ras/{instanceId}:
+    get:
+      operationId: RuleAdvSettingController_findRASByInstanceId
+      parameters:
+        - name: instanceId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_24
+    patch:
+      operationId: RuleAdvSettingController_updateRASByInstanceId
+      parameters:
+        - name: instanceId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRuleAdvSettingDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_24
+    delete:
+      operationId: RuleAdvSettingController_removeRASByInstanceId
+      parameters:
+        - name: instanceId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_24
+  /api/admin/merchants:
+    post:
+      operationId: MerchantsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMerchantDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_25
+        - Merchants
+    get:
+      operationId: MerchantsController_retrieveMerchants
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_25
+  /api/admin/merchants/{id}:
+    get:
+      operationId: MerchantsController_retrieveMerchant
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_25
+    patch:
+      operationId: MerchantsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMerchantsDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_25
+    delete:
+      operationId: MerchantsController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_25
+  /api/admin/merchants/{id}/mcc:
+    post:
+      operationId: MerchantsController_createMCC
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags: *ref_25
+    get:
+      operationId: MerchantsController_retrieveMCCs
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_25
+  /api/coelsa/file:
+    post:
+      operationId: CoelsaController_upload
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Coelsa
+  /api/kyt-import:
+    get:
+      operationId: KytImportController_findAll
+      parameters:
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: &ref_26
+        - KytImport
+  /api/kyt-import/{type}:
+    post:
+      operationId: KytImportController_createKytImportItem
+      parameters:
+        - name: type
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags: *ref_26
+  /api/kym/persons:
+    get:
+      operationId: KymController_retrieveKymPersons
+      parameters:
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: text
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: nationality
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: &ref_27
+        - Kym
+  /api/kym/script/createMasiveKymPersons:
+    get:
+      operationId: KymController_createMasiveKymPersons
+      parameters:
+        - name: emailClient
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_27
+  /api/kym/business:
+    get:
+      operationId: KymController_retrieveKymBusiness
+      parameters:
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: text
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_27
+  /api/kyb:
+    post:
+      operationId: KybController_create[0]
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_28
+        - Kyb
+    get:
+      operationId: KybController_getAllKybs[0]
+      parameters:
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: columns
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}:
+    post:
+      operationId: KybController_create[1]
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_28
+    get:
+      operationId: KybController_getAllKybs[1]
+      parameters:
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: columns
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/monitoring:
+    post:
+      operationId: KybController_createKybMonitoring
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateKybMonitoringDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_28
+    get:
+      operationId: KybController_retrieveKybMonitoring
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+    patch:
+      operationId: KybController_updateKybMonitoring
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateKybMonitoringDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/CR/manual:
+    post:
+      operationId: KybController_createKybCrManual
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/manual:
+    post:
+      operationId: KybController_createManual
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybManualDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_28
+  /api/kyb/report:
+    get:
+      operationId: KybController_getKybsReport
+      parameters:
+        - name: fromDate
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: endDate
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/batches:
+    get:
+      operationId: KybController_getKybBatches
+      parameters:
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: status
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+    post:
+      operationId: KybController_createKybBatch
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags: *ref_28
+  /api/kyb/notificationsv2:
+    get:
+      operationId: KybController_getNotificationsV2
+      parameters:
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/notificationsv2/{id}:
+    get:
+      operationId: KybController_getNotificationV2ById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}:
+    get:
+      operationId: KybController_getById[0]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: lang
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+    patch:
+      operationId: KybController_updateById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+    delete:
+      operationId: KybController_deleteById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}:
+    get:
+      operationId: KybController_getById[1]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: lang
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+    patch:
+      operationId: KybController_updateByIdV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+    delete:
+      operationId: KybController_deleteByIdV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/timeline:
+    get:
+      operationId: KybController_getTimelineById[0]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/timeline:
+    get:
+      operationId: KybController_getTimelineById[2]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/subject/{id}/timeline:
+    get:
+      operationId: KybController_getSubjectTimelineById[0]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/subject/{id}/timeline:
+    get:
+      operationId: KybController_getSubjectTimelineById[2]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/restart:
+    patch:
+      operationId: KybController_restartById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/subject/{id}/restart:
+    patch:
+      operationId: KybController_restartSubjectById[0]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/subject/{id}/restart:
+    patch:
+      operationId: KybController_restartSubjectById[1]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/riskLevel/{lvl}:
+    patch:
+      operationId: KybController_updateRiskLevelById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: lvl
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/subject/{id}/riskLevel/{lvl}:
+    patch:
+      operationId: KybController_updateSubjectRiskLevelById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: lvl
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/checks:
+    get:
+      operationId: KybController_findChecksByKybIdAndType
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/check:
+    post:
+      operationId: KybController_createCheck
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybCheckDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/check/{id}:
+    get:
+      operationId: KybController_getCheckById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/check/{checkId}:
+    patch:
+      operationId: KybController_updateCheckById
+      parameters:
+        - name: checkId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybCheckDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/subject:
+    post:
+      operationId: KybController_createSubject
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybSubjectDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{kybId}/subject:
+    post:
+      operationId: KybController_createSubjectForKyb
+      parameters:
+        - name: kybId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybRelatedSubjectDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{kybId}/subject/{subjectId}:
+    delete:
+      operationId: KybController_deleteSubjectFromKyb
+      parameters:
+        - name: kybId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: relationType
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/all/subjects:
+    get:
+      operationId: KybController_getAllSubjects
+      parameters:
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/subject/{id}:
+    get:
+      operationId: KybController_getSubjectById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: lang
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/subject/{subjectId}:
+    patch:
+      operationId: KybController_updatesubjectById
+      parameters:
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybSubjectDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/comments:
+    post:
+      operationId: KybController_addComment
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/file:
+    post:
+      operationId: KybController_attachFiles[0]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/file:
+    post:
+      operationId: KybController_attachFiles[1]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/file/{key}:
+    delete:
+      operationId: KybController_deleteFile
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/subject/{id}/comments:
+    post:
+      operationId: KybController_addSubjectComment
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/subject/{id}/file:
+    post:
+      operationId: KybController_attachSubjectFiles[0]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/subject/{id}/file:
+    post:
+      operationId: KybController_attachSubjectFiles[1]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/subject/{id}/file/{key}:
+    delete:
+      operationId: KybController_deleteSubjectFile
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/all/notifications:
+    get:
+      operationId: KybController_getAllNotifications
+      parameters:
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/notification/{id}:
+    patch:
+      operationId: KybController_updateNotificationById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybNotificationDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/list:
+    post:
+      operationId: KybController_uploadLists[0]
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/list:
+    post:
+      operationId: KybController_uploadLists[1]
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/list/{type}:
+    get:
+      operationId: KybController_getLists
+      parameters:
+        - name: type
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/private:
+    patch:
+      operationId: KybController_updateIsPrivate
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/{entityType}/{tab}:
+    get:
+      operationId: KybController_getSubjects
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: tab
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: entityType
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/private:
+    patch:
+      operationId: KybController_updateIsPrivateV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{country}/{id}/subject/private:
+    patch:
+      operationId: KybController_updateSubjectIsPrivate
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybSubjectDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/monitored:
+    patch:
+      operationId: KybController_updateMonitored
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/monitored:
+    patch:
+      operationId: KybController_updateIsMonitoredV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/CR/{id}:
+    patch:
+      operationId: KybController_updateByIdV2Cr
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/metadata:
+    patch:
+      operationId: KybController_updateMetadata
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/restart:
+    patch:
+      operationId: KybController_restartByIdV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/riskLevel/{lvl}:
+    patch:
+      operationId: KybController_updateRiskLevelByIdV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: lvl
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/subject/{id}/riskLevel/{lvl}:
+    patch:
+      operationId: KybController_updateSubjectRiskLevelByIdV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: lvl
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/{id}/riskMatrix:
+    post:
+      operationId: KybController_runRiskMatrix[0]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/riskMatrix:
+    post:
+      operationId: KybController_runRiskMatrix[1]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/person/{id}/riskMatrix:
+    post:
+      operationId: KybController_runRiskMatrixPerson[0]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/person/v2/{country}/{id}/riskMatrix:
+    post:
+      operationId: KybController_runRiskMatrixPerson[1]
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/check:
+    post:
+      operationId: KybController_createCheckV2
+      parameters:
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybCheckDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/checks:
+    get:
+      operationId: KybController_findChecksByKybIdAndTypeV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/check/{id}:
+    get:
+      operationId: KybController_getCheckByIdV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/check/{checkId}:
+    patch:
+      operationId: KybController_updateCheckByIdV2
+      parameters:
+        - name: checkId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybCheckDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/CR/subject/manual:
+    post:
+      operationId: KybController_createKybSubjectCrManual
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/subject:
+    post:
+      operationId: KybController_createSubjectV2
+      parameters:
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybSubjectDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{kybId}/subject:
+    post:
+      operationId: KybController_createSubjectForKybV2
+      parameters:
+        - name: kybId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybRelatedSubjectDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{kybId}/subject/{subjectId}:
+    delete:
+      operationId: KybController_deleteSubjectFromKybV2
+      parameters:
+        - name: kybId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: relationType
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/all/subjects:
+    get:
+      operationId: KybController_getAllSubjectsV2
+      parameters:
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/subject/{id}:
+    get:
+      operationId: KybController_getSubjectByIdV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: lang
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/CR/subject/{subjectId}:
+    patch:
+      operationId: KybController_updateSubjectByIdV2Cr
+      parameters:
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/subject/{subjectId}:
+    patch:
+      operationId: KybController_updateSubjectByIdV2
+      parameters:
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybSubjectDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/comments:
+    post:
+      operationId: KybController_addCommentV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/file/{key}:
+    delete:
+      operationId: KybController_deleteFileV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/subject/{id}/comments:
+    post:
+      operationId: KybController_addSubjectCommentV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/subject/{id}/file/{key}:
+    delete:
+      operationId: KybController_deleteSubjectFileV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/all/notifications:
+    get:
+      operationId: KybController_getAllNotificationsV2
+      parameters:
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/notification/{id}:
+    patch:
+      operationId: KybController_updateNotificationByIdV2
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKybNotificationDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/list/{type}:
+    get:
+      operationId: KybController_getListsV2
+      parameters:
+        - name: type
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/{entityType}/{tab}:
+    get:
+      operationId: KybController_getSubjectsV2
+      parameters:
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: tab
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: entityType
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: sortField
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sortDirection
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kyb/v2/{country}/{id}/report:
+    get:
+      operationId: KybController_getHistoryChecks
+      parameters:
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: entity
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: documentNumber
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_28
+  /api/kybWebhook/company:
+    post:
+      operationId: KybWebhookController_checkCompany
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: &ref_29
+        - KybWebhook
+  /api/kybWebhook/person:
+    post:
+      operationId: KybWebhookController_checkPerson
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_29
+  /api/kybWebhook/{env}/check:
+    post:
+      operationId: KybWebhookController_check
+      parameters:
+        - name: env
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_29
+  /api/riskmatrix:
+    post:
+      operationId: RiskmatrixController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRiskMatrixDTO'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_30
+        - Riskmatrix
+    get:
+      operationId: RiskmatrixController_getRiskMatrices
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_30
+  /api/riskmatrix/{id}:
+    patch:
+      operationId: RiskmatrixController_updateById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRiskMatrixDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_30
+    get:
+      operationId: RiskmatrixController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_30
+    delete:
+      operationId: RiskmatrixController_removeRiskMatrix
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_30
+  /api/riskmatrix/history:
+    get:
+      operationId: RiskmatrixController_getRiskHistory
+      parameters:
+        - name: id
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: targetId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_30
+  /api/riskmatrix/history/last:
+    get:
+      operationId: RiskmatrixController_getLastRiskHistory
+      parameters:
+        - name: targetId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: target
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: country
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_30
+  /api/riskmatrix/currentRiskMatrix/{country}:
+    get:
+      operationId: RiskmatrixController_getCurrentRiskMatrix
+      parameters:
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_30
+  /api/riskmatrix/executeRiskMatrix/{country}:
+    post:
+      operationId: RiskmatrixController_getRiskPoints
+      parameters:
+        - name: country
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_30
+  /api/repet/ingest:
+    post:
+      operationId: RepetController_getCollectionsRepetArgentina
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Repet
+  /api/mailer/sendEmail:
+    get:
+      operationId: MailerController_sendEmail
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Mailer
+  /api/kyc/person:
+    post:
+      operationId: KycController_createPerson
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePersonDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_31
+        - Kyc
+  /api/kyc/person/{id}/document:
+    post:
+      operationId: KycController_createPersonDocument
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDocumentDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_31
+  /api/kyc/person/{id}/selfie:
+    post:
+      operationId: KycController_createPersonSelfie
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSelfieDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_31
+  /api/kyc/person/search:
+    get:
+      operationId: KycController_searchPeople
+      parameters:
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: text
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: externalId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: status
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+  /api/kyc/person/{id}:
+    get:
+      operationId: KycController_findOnePerson
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+    patch:
+      operationId: KycController_updatePerson
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+    delete:
+      operationId: KycController_removePerson
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+  /api/kyc/person/{id}/comments:
+    post:
+      operationId: KycController_createPersonComment
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePersonCommentDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_31
+    get:
+      operationId: KycController_searchPersonComments
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+  /api/kyc/person/{id}/comments/{commentId}:
+    delete:
+      operationId: KycController_removePersonComment
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: commentId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+  /api/kyc/person/{id}/checks:
+    post:
+      operationId: KycController_createPersonCheck
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_31
+    get:
+      operationId: KycController_getPersonChecks
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+  /api/kyc/check/{id}/images:
+    post:
+      operationId: KycController_uploadImage
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadImagesDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_31
+  /api/kyc/person/{id}/checks-preloaded:
+    post:
+      operationId: KycController_createPersonCheckWithPreloaded
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckPreloadedDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_31
+  /api/kyc/check/search:
+    get:
+      operationId: KycController_searchChecks
+      parameters:
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: text
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: status
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+  /api/kyc/check/{id}:
+    get:
+      operationId: KycController_getCheckById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+    patch:
+      operationId: KycController_updateCheck
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCheckDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_31
+  /api/kyc-webhook/{env}/check:
+    post:
+      operationId: KycWebhookController_check
+      parameters:
+        - name: env
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: complycube-signature
+          required: true
+          in: header
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - KycWebhook
+  /api/govCheck/argentinaValidation/{variable}/{documento}:
+    get:
+      operationId: GovCheckController_govCheckArValidation
+      parameters:
+        - name: variable
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: documento
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: &ref_32
+        - GovCheck
+  /api/govCheck/argentinaValidationLight/{documentNumber}:
+    get:
+      operationId: GovCheckController_govCheckArValidationLight
+      parameters:
+        - name: documentNumber
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/brazilValidation:
+    get:
+      operationId: GovCheckController_govCheckBrValidation
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/brazilValidationRelativeName:
+    get:
+      operationId: GovCheckController_govCheckBrValidationRelativeName
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/rutChile:
+    get:
+      operationId: GovCheckController_validarRutChile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/colombiaValidation:
+    post:
+      operationId: GovCheckController_govCheckColombiaValidation
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InGovCheckCoValidationDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/mexicoCurp:
+    post:
+      operationId: GovCheckController_govCheckMxCurp
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InGovCheckMxCurpDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/mexicoINE:
+    post:
+      operationId: GovCheckController_govCheckMxINE
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InGovCheckMxINEDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/mexicoPersona:
+    post:
+      operationId: GovCheckController_govCheckMxPersona
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InGovCheckMxPersonaDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/mexicoRfc:
+    post:
+      operationId: GovCheckController_govCheckMexicoRfc
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InGovCheckMxRfcDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/peruValidationDNI:
+    post:
+      operationId: GovCheckController_govCheckPeruValidationDNI
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InGovCheckPeValidationDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/peruValidationDNIFicha:
+    post:
+      operationId: GovCheckController_govCheckPeruValidationDNIFicha
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InGovCheckPeValidationDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/peruValidationRUC:
+    post:
+      operationId: GovCheckController_govCheckPeruValidationRUC
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InGovCheckPeValidationRucDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/getAllGovChecks/{emailClient}:
+    get:
+      operationId: GovCheckController_getAllGovChecks
+      parameters:
+        - name: emailClient
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/govCheckById/{id}:
+    get:
+      operationId: GovCheckController_getGovCheckById
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_32
+  /api/govCheck/delete/{id}:
+    delete:
+      operationId: GovCheckController_deleteGovCheckById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_32
+  /api/validation/ip/{ip}:
+    get:
+      operationId: SeonController_checkIp
+      parameters:
+        - name: ip
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: &ref_33
+        - Seon
+  /api/validation/emailRegistration/{email}:
+    get:
+      operationId: SeonController_validateEmail
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_33
+  /api/validation/email/{email}:
+    get:
+      operationId: SeonController_validateEmailVerification
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_33
+  /api/validation/bin/{bin}:
+    get:
+      operationId: SeonController_checkBin
+      parameters:
+        - name: bin
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_33
+  /api/validation/phone/{phoneNumber}:
+    get:
+      operationId: SeonController_phoneValidation
+      parameters:
+        - name: phoneNumber
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_33
+  /api/ecommerceRisk/analysis:
+    post:
+      operationId: EcommerceRiskController_analysis
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceAnalysisDTO'
+      responses:
+        '200':
+          description: ''
+      tags: &ref_34
+        - EcommerceRisk
+  /api/ecommerceRisk/checks/{email}:
+    get:
+      operationId: EcommerceRiskController_getAllChecks
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_34
+  /api/ecommerceRisk/check/{id}:
+    get:
+      operationId: EcommerceRiskController_getCheckById
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_34
+  /api/onboarding/identityCheck:
+    post:
+      operationId: OnboardingComplyCubeController_identityCheck
+      parameters:
+        - name: kyc
+          required: true
+          in: query
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InIdentityCheckDTO'
+      responses:
+        '200':
+          description: ''
+      tags: &ref_35
+        - OnboardingComplyCube
+  /api/onboarding/documentCheck:
+    post:
+      operationId: OnboardingComplyCubeController_documentCheck
+      parameters:
+        - name: kyc
+          required: true
+          in: query
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InDocumentCheckDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_35
+  /api/onboarding/identityAndDocumentCheck:
+    post:
+      operationId: OnboardingComplyCubeController_identityAndDocumentCheck
+      parameters:
+        - name: kyc
+          required: true
+          in: query
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InDocumentCheckDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_35
+  /api/onboarding/getCheckById/{id}:
+    get:
+      operationId: OnboardingComplyCubeController_getIdentityCheckById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_35
+  /api/onboarding/getAllChecks/{email}:
+    get:
+      operationId: OnboardingComplyCubeController_getAllChecks
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_35
+  /api/onboarding/getOnboarding:
+    get:
+      operationId: OnboardingComplyCubeController_getOnboarding
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_35
+  /api/onboarding/identityCheckJson:
+    post:
+      operationId: OnboardingComplyCubeController_identityCheckJSON
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InIdentityCheckJsonDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_35
+  /api/onboarding/documentCheckJson:
+    post:
+      operationId: OnboardingComplyCubeController_documentCheckJson
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InDocumentCheckJsonDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_35
+  /api/onboarding/identityAndDocumentCheckJson:
+    post:
+      operationId: OnboardingComplyCubeController_identityAndDocumentCheckJson
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InIdentityCheckJsonDTO'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_35
+  /api/onboardingWebhook/check:
+    post:
+      operationId: OnboardingComplyCubeWebhookController_check
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: &ref_36
+        - OnboardingComplyCubeWebhook
+  /api/onboardingWebhook/secondCheck:
+    post:
+      operationId: OnboardingComplyCubeWebhookController_secondCheck
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_36
+  /api/healthCheck/{product}:
+    get:
+      operationId: HealthCheckController_getByProduct[0]
+      parameters:
+        - name: product
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: service
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags: &ref_37
+        - HealthCheck
+  /api/healthCheck/{product}/{service}:
+    get:
+      operationId: HealthCheckController_getByProduct[1]
+      parameters:
+        - name: product
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: service
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags: *ref_37
+  /api/healthCheck/cronHealthChecks:
+    post:
+      operationId: HealthCheckController_scheduledHealthChecks
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags: *ref_37
+  /api/healthCheck/create:
+    post:
+      operationId: HealthCheckController_createCheck
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckDTO'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_37
+  /api/healthCheck/aml:
+    get:
+      operationId: HealthCheckController_healthCheckAml
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_37
+  /api/healthCheck/amlCrypto:
+    get:
+      operationId: HealthCheckController_healthCheckAmlCrypto
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_37
+  /api/healthCheck/kyt:
+    get:
+      operationId: HealthCheckController_healthCheckKyt
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_37
+  /api/healthCheck/onboarding:
+    get:
+      operationId: HealthCheckController_healthCheckOnboarding
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_37
+  /api/healthCheck/getStatus/{service}/{days}:
+    get:
+      operationId: HealthCheckController_getServiceStatus
+      parameters:
+        - name: service
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: days
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_37
+  /api/healthCheck/updateStatus/{service}/{date}:
+    put:
+      operationId: HealthCheckController_updateServiceStatus
+      parameters:
+        - name: service
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: date
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: status1
+          required: true
+          in: query
+          schema:
+            type: boolean
+        - name: status2
+          required: true
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+      tags: *ref_37
+  /api/healthCheck/deleteStatus/{id}:
+    delete:
+      operationId: HealthCheckController_deleteServiceStatusById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_37
+  /api/reportXML/mx/{type}/{id}:
+    get:
+      operationId: XmlDataController_getMxXMLData
+      parameters:
+        - name: type
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - XmlData
+  /api/webhooks/{id}:
+    get:
+      operationId: WebhooksController_retrieveWebhook
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: &ref_38
+        - Webhooks
+    patch:
+      operationId: WebhooksController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_38
+    delete:
+      operationId: WebhooksController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags: *ref_38
+  /api/webhooks:
+    get:
+      operationId: WebhooksController_retrieveWebhooks
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_38
+    post:
+      operationId: WebhooksController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWebhookDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_38
+  /api/webhooks/test/{id}:
+    post:
+      operationId: WebhooksController_test
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_38
+  /api/requestToApproveOrReject:
+    post:
+      operationId: RequestToApprovedOrRejectController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRequestToApproveOrRejectDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_39
+        - RequestToApprovedOrReject
+    get:
+      operationId: RequestToApprovedOrRejectController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_39
+  /api/requestToApproveOrReject/requestedBy/{requestedBy}:
+    get:
+      operationId: >-
+        RequestToApprovedOrRejectController_findRequestToApproveOrRejectByRequestedBy
+      parameters:
+        - name: requestedBy
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_39
+  /api/requestToApproveOrReject/evaluator/{evaluator}:
+    get:
+      operationId: >-
+        RequestToApprovedOrRejectController_findAllRequestToApproveOrRejectByPossibleEvaluators
+      parameters:
+        - name: evaluator
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_39
+  /api/requestToApproveOrReject/{id}:
+    get:
+      operationId: RequestToApprovedOrRejectController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_39
+    put:
+      operationId: RequestToApprovedOrRejectController_approveOrRejectRequestById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: approve
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: email
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_39
+    delete:
+      operationId: RequestToApprovedOrRejectController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags: *ref_39
+  /api/dataExport/retrieveData/{dataType}:
+    get:
+      operationId: DataExportController_getDataExports
+      parameters:
+        - name: keyReports
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+        - DataExport
+  /api/batch/getBatch/{batchId}:
+    get:
+      operationId: BatchController_getBatch
+      parameters:
+        - name: batchId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: &ref_40
+        - Batch
+  /api/batch/userBatches:
+    get:
+      operationId: BatchController_getBatches
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_40
+  /api/batch/kyt/consumer:
+    post:
+      operationId: BatchController_createConsumersBatch
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags: *ref_40
+  /api/batch/kyt/business:
+    post:
+      operationId: BatchController_createBusinessBatch
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags: *ref_40
+  /api/batch/kyt/transaction:
+    post:
+      operationId: BatchController_createTransactionsBatch
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_40
+  /api/batch/correctionFile/{batchId}:
+    patch:
+      operationId: BatchController_updateConsumersBatch
+      parameters:
+        - name: batchId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_40
+  /api/batch/process/{batchId}:
+    post:
+      operationId: BatchController_processBatch
+      parameters:
+        - name: batchId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags: *ref_40
+  /api/batch/temporalItems/{batchId}:
+    get:
+      operationId: BatchController_retrievesTemporalItems
+      parameters:
+        - name: batchId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_40
+  /api/batch/temporalItems/{itemId}:
+    delete:
+      operationId: BatchController_updateTemporalItem
+      parameters:
+        - name: itemId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_40
+  /api/batch/deepDelete/{batchId}:
+    delete:
+      operationId: BatchController_deleteBatch
+      parameters:
+        - name: batchId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_40
+  /api/batchWebhook/results:
+    post:
+      operationId: BatchWebhookController_checkPerson
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - BatchWebhook
+info:
+  title: Gueno API
+  description: Automatically generated API documentation using NestJS Swagger
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    LoginUserDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Correo electrónico del usuario
+          example: usuario@ejemplo.com
+        password:
+          type: string
+          description: Contraseña del usuario
+          example: Password123!
+          minLength: 8
+          maxLength: 100
+        otp:
+          type: string
+          description: Código OTP para autenticación de dos factores (opcional)
+          example: '123456'
+      required:
+        - email
+        - password
+    CreateUserDTO:
+      type: object
+      properties: {}
+    EnableMfaDTO:
+      type: object
+      properties: {}
+    ChangePasswordDTO:
+      type: object
+      properties: {}
+    ResetPasswordDTO:
+      type: object
+      properties: {}
+    UpdateUserDTO:
+      type: object
+      properties: {}
+    CreateClientServiceDTO:
+      type: object
+      properties: {}
+    UpdateClientServiceDTO:
+      type: object
+      properties: {}
+    CreateClientConsumptionDTO:
+      type: object
+      properties: {}
+    CreateReportDTO:
+      type: object
+      properties: {}
+    CreateReportItemDTO:
+      type: object
+      properties: {}
+    InVerifyTransactionDTO:
+      type: object
+      properties: {}
+    InCreateTransactionEventDTO:
+      type: object
+      properties: {}
+    CreateConsumerUserDTO:
+      type: object
+      properties: {}
+    InCreateConsumerUserEventDTO:
+      type: object
+      properties: {}
+    CreateBusinessUserDTO:
+      type: object
+      properties: {}
+    InCreateBusinessUserEventDTO:
+      type: object
+      properties: {}
+    PaymentMethodDTO:
+      type: object
+      properties: {}
+    CredentialDTO:
+      type: object
+      properties: {}
+    InSendSlackMessageDTO:
+      type: object
+      properties: {}
+    UserActionDto:
+      type: object
+      properties: {}
+    CreateRoleDto:
+      type: object
+      properties: {}
+    UpdateRoleDto:
+      type: object
+      properties: {}
+    CreateUserMasterDto:
+      type: object
+      properties: {}
+    UpdateUserMasterDto:
+      type: object
+      properties: {}
+    UpdateManyCases:
+      type: object
+      properties: {}
+    CreateCaseManagementDTO:
+      type: object
+      properties: {}
+    CreateCommentDto:
+      type: object
+      properties: {}
+    CreateCaseReportDto:
+      type: object
+      properties: {}
+    UpdateCaseReportDto:
+      type: object
+      properties: {}
+    UpdateCaseManagementDTO:
+      type: object
+      properties: {}
+    CreateChecklistInstanceDto:
+      type: object
+      properties: {}
+    UpdateChecklistInstanceDto:
+      type: object
+      properties: {}
+    CreateChecklistTemplateDto:
+      type: object
+      properties: {}
+    UpdateChecklistTemplateDto:
+      type: object
+      properties: {}
+    CreateGeneralAlertDto:
+      type: object
+      properties: {}
+    UpdateGeneralAlertDto:
+      type: object
+      properties: {}
+    CreateAlertSettingDto:
+      type: object
+      properties: {}
+    UpdateAlertSettingDto:
+      type: object
+      properties: {}
+    AmlCAInputDto:
+      type: object
+      properties: {}
+    UpdateAmlDto:
+      type: object
+      properties: {}
+    UpdateMonitorsDto:
+      type: object
+      properties: {}
+    UpdateAmlCommentDto:
+      type: object
+      properties: {}
+    AmlBrDto:
+      type: object
+      properties: {}
+    CreateRuleDto:
+      type: object
+      properties: {}
+    UpdateRuleDto:
+      type: object
+      properties: {}
+    ImportBinsDto:
+      type: object
+      properties: {}
+    CreateCaseAdminPanelDto:
+      type: object
+      properties: {}
+    UpdateCaseAdminPanelDto:
+      type: object
+      properties: {}
+    CreateWorkflowDto:
+      type: object
+      properties: {}
+    CreateRulesTemplateDto:
+      type: object
+      properties: {}
+    UpdateRulesTemplateDto:
+      type: object
+      properties: {}
+    CreateFiltersTemplateDto:
+      type: object
+      properties: {}
+    UpdateFiltersTemplateDto:
+      type: object
+      properties: {}
+    CreateListDto:
+      type: object
+      properties: {}
+    UpdateListsDto:
+      type: object
+      properties: {}
+    CreateRuleAdvSettingDto:
+      type: object
+      properties: {}
+    UpdateRuleAdvSettingDto:
+      type: object
+      properties: {}
+    CreateMerchantDto:
+      type: object
+      properties: {}
+    UpdateMerchantsDto:
+      type: object
+      properties: {}
+    KybDto:
+      type: object
+      properties: {}
+    CreateKybMonitoringDTO:
+      type: object
+      properties: {}
+    KybManualDto:
+      type: object
+      properties: {}
+    UpdateKybDto:
+      type: object
+      properties: {}
+    KybCheckDto:
+      type: object
+      properties: {}
+    UpdateKybCheckDto:
+      type: object
+      properties: {}
+    KybSubjectDto:
+      type: object
+      properties: {}
+    KybRelatedSubjectDto:
+      type: object
+      properties: {}
+    UpdateKybSubjectDto:
+      type: object
+      properties: {}
+    UpdateKybNotificationDto:
+      type: object
+      properties: {}
+    CreateRiskMatrixDTO:
+      type: object
+      properties: {}
+    UpdateRiskMatrixDto:
+      type: object
+      properties: {}
+    CreatePersonDto:
+      type: object
+      properties: {}
+    CreateDocumentDto:
+      type: object
+      properties: {}
+    CreateSelfieDto:
+      type: object
+      properties: {}
+    UpdatePersonDto:
+      type: object
+      properties: {}
+    CreatePersonCommentDto:
+      type: object
+      properties: {}
+    CreateCheckDto:
+      type: object
+      properties: {}
+    UploadImagesDto:
+      type: object
+      properties: {}
+    CreateCheckPreloadedDto:
+      type: object
+      properties: {}
+    UpdateCheckDto:
+      type: object
+      properties: {}
+    InGovCheckCoValidationDTO:
+      type: object
+      properties: {}
+    InGovCheckMxCurpDTO:
+      type: object
+      properties: {}
+    InGovCheckMxINEDTO:
+      type: object
+      properties: {}
+    InGovCheckMxPersonaDTO:
+      type: object
+      properties: {}
+    InGovCheckMxRfcDto:
+      type: object
+      properties: {}
+    InGovCheckPeValidationDto:
+      type: object
+      properties: {}
+    InGovCheckPeValidationRucDTO:
+      type: object
+      properties: {}
+    EcommerceAnalysisDTO:
+      type: object
+      properties: {}
+    InIdentityCheckDTO:
+      type: object
+      properties: {}
+    InDocumentCheckDTO:
+      type: object
+      properties: {}
+    InIdentityCheckJsonDTO:
+      type: object
+      properties: {}
+    InDocumentCheckJsonDTO:
+      type: object
+      properties: {}
+    CreateCheckDTO:
+      type: object
+      properties: {}
+    CreateWebhookDto:
+      type: object
+      properties: {}
+    CreateRequestToApproveOrRejectDto:
+      type: object
+      properties: {}
+    BatchDto:
+      type: object
+      properties: {}
